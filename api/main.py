@@ -18,7 +18,13 @@ RECEIVER_LATEST_PATH = MODELS_DIR / "receiver_latest.parquet"
 DEFENSE_LATEST_PATH = MODELS_DIR / "defense_latest.parquet"
 
 app = FastAPI(title="NFL Receiver Yards Predictor", version="1.0")
-
+@app.get("/")
+def root():
+    return {
+        "service": "NFL Receiver Yards AI API",
+        "status": "running",
+        "docs": "/docs"
+    }
 
 class PredictRequest(BaseModel):
     receiver: str
