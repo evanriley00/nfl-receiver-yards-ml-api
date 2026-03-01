@@ -8,6 +8,9 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+import os
+import boto3
+
 MODELS_DIR = Path("models")
 MODEL_PATH = MODELS_DIR / "model.joblib"
 META_PATH = MODELS_DIR / "features.json"
@@ -28,9 +31,52 @@ receiver_latest = None
 defense_latest = None
 
 
+def _ensure_model_files():
+    """
+    If model artifacts are missing locally (inside the container), download them from S3.
+    Controlled by env vars:
+      MODEL_S3_BUCKET (required to download)
+      MODEL_S3_PREFIX (optional, default 'models/')
+    """
+    bucket = os.getenv("MODEL_S3_BUCKET")
+    prefix = os.getenv("MODEL_S3_PREFIX", "models/").lstrip("/")
+
+    required = {
+        "model.joblib": MODEL_PATH,
+        "features.json": META_PATH,
+        "receiver_latest.parquet": RECEIVER_LATEST_PATH,
+        "defense_latest.parquet": DEFENSE_LATEST_PATH,
+    }
+
+    # If everything exists, do nothing
+    if all(path.exists() for path in required.values()):
+        return
+
+    # If missing and no bucket configured, fail with a clear message
+    if not bucket:
+        missing = [name for name, path in required.items() if not path.exists()]
+        raise RuntimeError(
+            "Missing model artifacts locally and MODEL_S3_BUCKET is not set. "
+            f"Missing: {missing}"
+        )
+
+    s3 = boto3.client("s3")
+
+    # Make sure local directory exists
+    MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    for name, local_path in required.items():
+        if local_path.exists():
+            continue
+        key = f"{prefix}{name}"
+        s3.download_file(bucket, key, str(local_path))
+
+
 @app.on_event("startup")
 def _startup():
     global model, features, receiver_latest, defense_latest
+
+    _ensure_model_files()
 
     if not MODEL_PATH.exists():
         raise RuntimeError("Model not found. Train first: python src/train.py")

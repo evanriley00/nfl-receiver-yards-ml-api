@@ -1,0 +1,17 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.git
+.gitignore
+tests
+README.md
+
+# IMPORTANT: include trained artifacts in the image
+!models/
+!models/**
+!*.joblib
+!*.parquet
+!*.json
