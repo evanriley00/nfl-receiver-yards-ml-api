@@ -1,9 +1,8 @@
-# nfl-receiver-yards-ml-api
+# nfl-receiver-yards-ai-api
 
-A production-deployed machine learning inference API that predicts an NFL receiver’s expected receiving yards vs a defense.
+A production-deployed AI inference service that predicts NFL wide receiver performance against a given defense.
 
-This project demonstrates end-to-end deployment using FastAPI, Docker, GitHub Actions CI/CD, and AWS ECS (Fargate) behind an Application Load Balancer (ALB).
-
+This project demonstrates how to design, containerize, and deploy an AI system to production using FastAPI, Docker, GitHub Actions CI/CD, and AWS ECS (Fargate) behind an Application Load Balancer (ALB).
 
 ## Live Demo
 
