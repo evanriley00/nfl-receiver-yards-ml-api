@@ -6,14 +6,19 @@ This project demonstrates how to design, containerize, and deploy an AI system t
 
 ## Live Demo
 
-Base URL:
+This project is deployed to a live AWS ECS Fargate environment behind an Application Load Balancer.
+
+Base Endpoint (Service Status):
 http://nfl-api-alb-2067157598.us-east-2.elb.amazonaws.com
 
-Endpoints:
+Interactive API Demo (Swagger UI):
+http://nfl-api-alb-2067157598.us-east-2.elb.amazonaws.com/docs
 
-- GET /health
-- GET /docs
-- POST /predict
+Health Check Endpoint:
+GET /health
+
+The root URL ( / ) returns service metadata confirming the API is running.
+The /docs endpoint provides a live, interactive interface to test prediction requests against the production deployment.
 
 
 ### Example Request (PowerShell)
