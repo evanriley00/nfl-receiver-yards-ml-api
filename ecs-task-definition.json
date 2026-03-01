@@ -22,7 +22,10 @@
           "protocol": "tcp"
         }
       ],
-      "environment": [],
+      "environment": [
+  { "name": "MODEL_S3_BUCKET", "value": "nfl-ai-208041906633" },
+  { "name": "MODEL_S3_PREFIX", "value": "models/" }
+],
       "mountPoints": [],
       "volumesFrom": [],
       "logConfiguration": {
